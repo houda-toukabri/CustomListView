@@ -2,9 +2,13 @@ package com.houda.customlistview;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,5 +70,37 @@ public class MainActivity extends AppCompatActivity {
 
         // On attribue à notre "ListView" l'adapter que l'on vient de créer
         maListViewPerso.setAdapter(adapter);
+
+        maListViewPerso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Méthode 1
+                HashMap map = (HashMap) maListViewPerso.getItemAtPosition(position);
+                Toast.makeText(MainActivity.this, (String) map.get("titre"),
+                        Toast.LENGTH_SHORT).show();
+                // Méthode 2
+                /*String selectedItem = ((TextView) view.findViewById(R.id.titre)).getText().toString();
+                Toast.makeText(MainActivity.this, selectedItem, Toast.LENGTH_SHORT).show();*/
+            }
+        });
+
+        maListViewPerso.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // On récupère la "HashMap" contenant les infos de notre item (titre, description, img)
+                HashMap map = (HashMap) maListViewPerso.getItemAtPosition(position);
+                // On crée une boite de dialogue
+                AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+                // On attribue un titre à notre boite de dialogue
+                adb.setTitle("Sélection Item");
+                // On insère un message à notre boite de dialogue, et ici on affiche le titre de l'item cliqué
+                adb.setMessage("Votre choix : " + map.get("titre"));
+                // On indique que l'on veut le bouton "ok" à notre boite de dialogue
+                adb.setPositiveButton("Ok", null);
+                // On affiche la boite de dialogue
+                adb.show();
+                return true;
+            }
+        });
     }
     }
